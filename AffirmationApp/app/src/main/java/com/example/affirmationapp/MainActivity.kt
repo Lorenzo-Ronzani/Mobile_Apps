@@ -35,7 +35,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             AffirmationAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    AffirmationApp()
+                    Column(modifier = Modifier.padding(innerPadding)){
+                        Spacer(modifier = Modifier.height(16.dp))
+                        AffirmationApp()
+                    }
                 }
             }
         }
@@ -43,33 +46,40 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AffirmationApp() {
-    AffirmationCard()
+fun AffirmationApp(modifier: Modifier = Modifier) {
+    AffirmationList(affirmationList = Datasource().loadAffirmation())
 }
-
+@Composable
+fun AffirmationCard(
+    affirmation: Affirmation,
+    modifier: Modifier = Modifier){
+    Card(modifier = modifier){
+        Column(){
+            Image(
+                painter = painterResource(affirmation.imageResourceId),
+                contentDescription = null,
+                modifier= Modifier.fillMaxWidth()
+                    .height(194.dp),
+                contentScale = ContentScale.Crop)
+            Text(
+                text = stringResource(affirmation.stringResourceId),
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
+}
 @Composable
 fun AffirmationList(affirmationList: List<Affirmation>){
-    LazyColumn() {
+    LazyColumn(){
         items(items = affirmationList){
-            affirmation -> AffirmationCard()
-
+                affirmation-> AffirmationCard(
+            affirmation = affirmation,
+            modifier = Modifier.padding(8.dp)
+        )
         }
     }
 }
-
-@Composable
-fun AffirmationCard(){
-    Card() {
-        Column() {
-            Image(
-                painterResource(R.drawable.image1),
-                contentDescription = null
-            )
-            Text(stringResource(R.string.affirmation1))
-        }
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
